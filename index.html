@@ -1,0 +1,809 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#B83A26">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Livret CDD">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icon-180.png">
+<link rel="icon" href="icon-192.png">
+<title>Livret Course de Durée</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700;800&family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&display=swap">
+<style>
+/* Layout : la piste. Bandeau tartan à couloirs, identité sur un dossard, chaque séance numérotée comme un dossard, zones d'écriture façon cahier */
+:root{
+  --bg:#F2F3EF; --surface:#FFFFFF; --sunk:#E9ECE6; --ink:#16211D; --muted:#5A6661; --line:#D3D8D2; --rule:#B9C3BD;
+  --tartan:#B83A26; --tartan-deep:#8F2A1A; --tartan-soft:#F6E1DA; --on-tartan:#FFF7F2;
+  --lane:#1F5C85; --lane-soft:#DDE9F2; --grass:#2C7449; --grass-soft:#DDEFE3;
+  --mark:#F5D63A; --mark-ink:#16211D; --paper-line:rgba(31,92,133,.16);
+  --h1:#B83A26; --h2:#1F5C85; --h3:#2C7449;
+  --f-display:"Barlow Condensed","Bahnschrift SemiCondensed","Bahnschrift","Avenir Next Condensed","Roboto Condensed","Arial Narrow",Arial,sans-serif;
+  --f-body:"Atkinson Hyperlegible","Segoe UI",system-ui,-apple-system,sans-serif;
+  --r:12px; --shadow:0 1px 0 rgba(22,33,29,.04),0 6px 18px -10px rgba(22,33,29,.18);
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0F1513; --surface:#172019; --sunk:#1F2925; --ink:#E8EEEA; --muted:#9AA7A1; --line:#2C3833; --rule:#3B4943;
+  --tartan:#C24A34; --tartan-deep:#7E2617; --tartan-soft:#3A221C; --on-tartan:#FFF4EE;
+  --lane:#76B2DD; --lane-soft:#18303F; --grass:#71C795; --grass-soft:#183526;
+  --mark:#E9CB34; --mark-ink:#16211D; --paper-line:rgba(118,178,221,.14); --h1:#A63A27; --h2:#1D4F73; --h3:#24603E; --shadow:0 8px 20px -12px rgba(0,0,0,.6); color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0F1513; --surface:#172019; --sunk:#1F2925; --ink:#E8EEEA; --muted:#9AA7A1; --line:#2C3833; --rule:#3B4943;
+  --tartan:#C24A34; --tartan-deep:#7E2617; --tartan-soft:#3A221C; --on-tartan:#FFF4EE;
+  --lane:#76B2DD; --lane-soft:#18303F; --grass:#71C795; --grass-soft:#183526;
+  --mark:#E9CB34; --mark-ink:#16211D; --paper-line:rgba(118,178,221,.14); --h1:#A63A27; --h2:#1D4F73; --h3:#24603E; --shadow:0 8px 20px -12px rgba(0,0,0,.6); color-scheme:dark}
+
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:15.5px;line-height:1.55;margin:0}
+.wrap{max-width:1080px;margin:0 auto;padding-left:max(18px,env(safe-area-inset-left,0px));padding-right:max(18px,env(safe-area-inset-right,0px))}
+h1,h2,h3{font-family:var(--f-display);text-wrap:balance;margin:0;line-height:1}
+h2{font-size:2.35rem;font-weight:800;text-transform:uppercase;letter-spacing:.005em}
+h3{font-size:1.35rem;font-weight:700;text-transform:uppercase;letter-spacing:.03em}
+p{margin:0}
+.mk{background:linear-gradient(transparent 12%,var(--mark) 12%,var(--mark) 88%,transparent 88%);color:var(--mark-ink);padding:0 .28em;box-decoration-break:clone;-webkit-box-decoration-break:clone}
+.num{font-variant-numeric:tabular-nums}
+
+/* ---------- Bandeau piste ---------- */
+.hero{background:var(--tartan);color:var(--on-tartan);position:relative;overflow:hidden;isolation:isolate}
+.hero::before{content:"";position:absolute;inset:0;z-index:-1;opacity:.5;
+  background:radial-gradient(circle at 30% 20%,rgba(255,255,255,.08) 0 1px,transparent 1.5px) 0 0/7px 7px,
+             radial-gradient(circle at 70% 60%,rgba(0,0,0,.10) 0 1px,transparent 1.5px) 0 0/9px 9px}
+.track{position:absolute;right:-180px;top:-120px;width:900px;height:620px;z-index:-1;pointer-events:none}
+.track path{fill:none;stroke:rgba(255,255,255,.55);stroke-width:2.5}
+.track text{fill:rgba(255,255,255,.55);font-family:var(--f-display);font-weight:800;font-size:34px}
+.hero .wrap{padding-block:34px 30px;display:grid;grid-template-columns:minmax(0,1.25fr) minmax(280px,.9fr);gap:28px;align-items:center}
+.hero .kicker{font-family:var(--f-display);font-weight:700;letter-spacing:.16em;text-transform:uppercase;font-size:.95rem;opacity:.85}
+.hero h1{font-size:clamp(3rem,8.5vw,5.6rem);font-weight:800;text-transform:uppercase;letter-spacing:-.01em;line-height:.88;margin-block:10px 14px}
+.hero h1 span{display:block;color:var(--mark)}
+.hero .sub{max-width:44ch;font-size:1.05rem;opacity:.95}
+.hero .tools{display:flex;flex-wrap:wrap;gap:8px;margin-top:20px}
+.hero .tools button,.hero .tools label{background:rgba(255,255,255,.12);color:var(--on-tartan);border:1px solid rgba(255,255,255,.45);border-radius:999px;padding:6px 13px;font-size:.88rem;font-weight:700;cursor:pointer;display:inline-flex;gap:6px;align-items:center;white-space:nowrap}
+.hero .tools button:hover,.hero .tools label:hover{background:rgba(255,255,255,.22)}
+.hero .tools svg{width:15px;height:15px;stroke:currentColor;fill:none;stroke-width:2}
+
+/* Dossard */
+.dossard{background:#FFFDF8;color:#16211D;border-radius:10px;padding:18px 22px 16px;position:relative;box-shadow:0 18px 30px -18px rgba(0,0,0,.55);transform:rotate(-1.6deg)}
+.dossard .pin{position:absolute;width:11px;height:11px;border-radius:50%;background:var(--tartan);box-shadow:inset 0 0 0 2px #E7DED2}
+.dossard .pin:nth-child(1){top:9px;left:10px}.dossard .pin:nth-child(2){top:9px;right:10px}
+.dossard .pin:nth-child(3){bottom:9px;left:10px}.dossard .pin:nth-child(4){bottom:9px;right:10px}
+.dossard .top{display:flex;justify-content:space-between;font-family:var(--f-display);font-weight:700;text-transform:uppercase;letter-spacing:.12em;font-size:.8rem;color:#8F2A1A;padding:0 8px}
+.dossard .vmabig{display:flex;align-items:baseline;justify-content:center;gap:6px;border-block:3px solid #16211D;margin:8px 0 12px;padding:2px 0}
+.dossard .vmabig input{font-family:var(--f-display);font-weight:800;font-size:5.2rem;line-height:1;text-align:center;border:0;background:transparent;color:#16211D;width:3.2ch;padding:0;-moz-appearance:textfield}
+.dossard .vmabig input::-webkit-outer-spin-button,.dossard .vmabig input::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
+.dossard .vmabig input::placeholder{color:#C9C2B6}
+.dossard .vmabig span{font-family:var(--f-display);font-weight:700;font-size:1.3rem;text-transform:uppercase;line-height:1}
+.dossard .vmabig span small{display:block;font-size:.8rem;letter-spacing:.1em;color:#5A6661}
+.dossard .ids{display:grid;grid-template-columns:1fr 1fr;gap:6px 14px}
+.dossard label{display:grid;font-size:.68rem;text-transform:uppercase;letter-spacing:.1em;font-weight:700;color:#5A6661}
+.dossard label.full{grid-column:1/-1}
+.dossard input{border:0;border-bottom:1.5px dashed #B9C3BD;border-radius:0;background:transparent;color:#16211D;font:inherit;font-family:var(--f-body);font-size:1.02rem;font-weight:700;letter-spacing:0;text-transform:none;padding:2px 0 3px}
+.dossard input:focus{outline:none;border-bottom-color:#B83A26;border-bottom-style:solid}
+
+/* ---------- Navigation ---------- */
+nav.lanes-nav{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:color-mix(in srgb,var(--surface) 92%,transparent);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--surface)}
+nav.lanes-nav .wrap{display:flex;gap:2px;overflow-x:auto;padding-block:7px;scrollbar-width:none}
+nav.lanes-nav .wrap::-webkit-scrollbar{display:none}
+nav.lanes-nav a{flex:0 0 auto;font-family:var(--f-display);font-weight:700;font-size:1.05rem;text-transform:uppercase;letter-spacing:.04em;color:var(--muted);text-decoration:none;padding:6px 12px;border-radius:8px;position:relative}
+nav.lanes-nav a:hover{color:var(--ink);background:var(--sunk)}
+nav.lanes-nav a.on{color:var(--tartan)}
+nav.lanes-nav a.on::after{content:"";position:absolute;left:12px;right:12px;bottom:0;height:3px;border-radius:3px;background:var(--tartan)}
+
+/* ---------- Sections ---------- */
+main{display:grid;gap:72px;padding-block:44px 72px}
+section{display:grid;gap:20px;scroll-margin-top:64px}
+main>*,section>*,[data-s5]{min-width:0}
+.sec-head{display:grid;grid-template-columns:auto 1fr;gap:2px 18px;align-items:center;padding-bottom:14px;position:relative}
+.sec-head::after{content:"";position:absolute;left:0;right:0;bottom:0;height:4px;background:repeating-linear-gradient(90deg,var(--ink) 0 26px,transparent 26px 34px);opacity:.85}
+.bib{grid-row:span 2;font-family:var(--f-display);font-weight:800;font-size:2.7rem;line-height:1;color:var(--tartan);background:var(--surface);border:2px solid var(--ink);border-radius:8px;min-width:76px;height:68px;display:grid;place-items:center;position:relative;transform:rotate(-2deg);box-shadow:var(--shadow)}
+.bib::before,.bib::after{content:"";position:absolute;top:6px;width:6px;height:6px;border-radius:50%;background:var(--ink);opacity:.55}
+.bib::before{left:6px}.bib::after{right:6px}
+.sec-head .tag{font-family:var(--f-display);font-weight:700;letter-spacing:.14em;text-transform:uppercase;font-size:.88rem;color:var(--tartan);align-self:end}
+.sec-head h2{align-self:start}
+.lead{max-width:70ch;font-size:1.08rem}
+
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:18px;display:grid;gap:14px;min-width:0;box-shadow:var(--shadow);align-content:start}
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(290px,1fr));gap:18px}
+.grid3{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:14px}
+.card-head{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;align-items:end}
+
+/* ---------- Champs ---------- */
+.f{display:grid;gap:5px;min-width:0}
+.f>span{font-size:.74rem;text-transform:uppercase;letter-spacing:.09em;color:var(--muted);font-weight:700}
+input,textarea,select{font:inherit;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:8px 10px;width:100%;min-width:0;transition:border-color .15s,background .15s}
+input:hover,textarea:hover,select:hover{border-color:var(--rule)}
+textarea{min-height:84px;resize:vertical;line-height:28px;padding:0 10px;
+  background:var(--surface) repeating-linear-gradient(transparent 0 27px,var(--paper-line) 27px 28px);background-attachment:local;border-color:var(--line)}
+input:focus-visible,textarea:focus-visible,select:focus-visible,button:focus-visible,a:focus-visible,label:focus-within{outline:2px solid var(--lane);outline-offset:1px}
+.dossard label:focus-within{outline:none}
+input[type=number]{font-variant-numeric:tabular-nums}
+button{font:inherit;cursor:pointer;border-radius:999px;border:1px solid var(--ink);background:var(--ink);color:var(--bg);padding:7px 14px;font-weight:700}
+button.ghost{background:transparent;color:var(--ink);border-color:var(--line)}
+button.small{padding:5px 12px;font-size:.86rem}
+button[data-usevma]{background:var(--tartan);border-color:var(--tartan);color:var(--on-tartan)}
+button[data-usevma]:hover{background:var(--tartan-deep)}
+.out{font-family:var(--f-display);font-weight:800;font-size:2.3rem;line-height:1;color:var(--ink)}
+.out small{font-size:1rem;font-weight:700;color:var(--muted);text-transform:uppercase}
+.result{display:flex;align-items:end;justify-content:space-between;gap:12px;flex-wrap:wrap;border-top:1px dashed var(--rule);padding-top:12px}
+
+/* ---------- Tableaux ---------- */
+.tbl{overflow-x:auto;border:1px solid var(--line);border-radius:var(--r);background:var(--surface);box-shadow:var(--shadow)}
+table{border-collapse:separate;border-spacing:0;width:100%;font-variant-numeric:tabular-nums}
+th,td{border-bottom:1px solid var(--line);padding:9px 11px;text-align:left;vertical-align:middle}
+tbody tr:last-child>*{border-bottom:0}
+thead th{font-family:var(--f-display);font-weight:700;text-transform:uppercase;letter-spacing:.05em;font-size:.98rem;background:var(--ink);color:var(--bg);white-space:nowrap;border-bottom:0;vertical-align:bottom}
+thead th small{font-family:var(--f-body);text-transform:none;letter-spacing:0;font-weight:400;opacity:.75;font-size:.78rem;white-space:normal}
+tbody th{font-weight:700;background:var(--sunk);white-space:nowrap}
+tbody tr:nth-child(even)>td{background:color-mix(in srgb,var(--sunk) 35%,transparent)}
+tfoot th,tfoot td{border-top:2px solid var(--ink);background:var(--sunk);font-weight:700}
+td input,td select{padding:6px 8px;background:var(--surface)}
+td textarea{min-height:56px}
+td.c,th.c{text-align:center}
+.me{background:var(--mark)!important;color:var(--mark-ink)!important;font-weight:800}
+.calc{font-weight:700;white-space:nowrap}
+.calc.empty{color:var(--muted);font-weight:400}
+.sens{min-width:190px}
+.w-n{width:86px}
+
+/* ---------- Thèmes ---------- */
+.afl{display:grid;gap:12px}
+.afl p{display:grid;grid-template-columns:76px 1fr;gap:12px;align-items:baseline}
+.afl b{font-family:var(--f-display);font-size:1.2rem}
+.themes{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:18px}
+.theme{border-radius:var(--r);border:1px solid var(--line);background:var(--surface);overflow:hidden;display:grid;align-content:start;min-width:0;box-shadow:var(--shadow)}
+.theme header{padding:18px 18px 16px;display:grid;gap:6px;color:var(--on-tartan);position:relative;overflow:hidden}
+.theme header::after{content:"";position:absolute;right:-30px;bottom:-40px;width:160px;height:120px;border:3px solid rgba(255,255,255,.28);border-radius:50%;box-shadow:0 0 0 14px rgba(255,255,255,.0),0 0 0 17px rgba(255,255,255,.2)}
+.theme header .n{font-family:var(--f-display);font-weight:800;font-size:3.2rem;line-height:.8;opacity:.9}
+.theme header h3{font-size:1.7rem}
+.theme header .s{font-size:.92rem;opacity:.95}
+.t1 header{background:var(--h1)} .t2 header{background:var(--h2)} .t3 header{background:var(--h3)}
+.theme header{color:#fff}
+.gauge{padding:14px 18px 6px;display:grid;gap:6px}
+.gauge .bar{position:relative;height:14px;border-radius:999px;background:var(--sunk);overflow:visible}
+.gauge .fill{position:absolute;top:0;bottom:0;border-radius:999px}
+.t1 .fill{background:var(--tartan)} .t2 .fill{background:var(--lane)} .t3 .fill{background:var(--grass)}
+.gauge .ticks{display:flex;justify-content:space-between;font-size:.72rem;color:var(--muted);font-variant-numeric:tabular-nums}
+.gauge .lbl{font-family:var(--f-display);font-weight:800;font-size:1.25rem;text-transform:uppercase}
+.gauge .lbl small{font-family:var(--f-body);font-weight:400;text-transform:none;color:var(--muted);font-size:.85rem}
+.theme dl{margin:0;display:grid}
+.theme dl div{padding:11px 18px;border-top:1px solid var(--line);display:grid;gap:2px}
+.theme dt{font-size:.72rem;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);font-weight:700}
+.theme dd{margin:0}
+.pill{display:inline-block;font-family:var(--f-display);font-weight:700;font-size:1rem;letter-spacing:.05em;text-transform:uppercase;padding:2px 11px;border-radius:999px;border:2px solid currentColor}
+
+/* ---------- Encadrés ---------- */
+.tip{display:grid;grid-template-columns:44px 1fr;gap:4px 14px;align-items:start;background:var(--grass-soft);border-radius:var(--r);padding:16px 20px;max-width:84ch}
+.tip.train{background:var(--lane-soft)}
+.tip .ico{grid-row:span 2;width:44px;height:44px;border-radius:50%;display:grid;place-items:center;background:var(--grass);color:#fff}
+.tip.train .ico{background:var(--lane)}
+.tip .ico svg{width:24px;height:24px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.tip h4{margin:0;font-family:var(--f-display);text-transform:uppercase;letter-spacing:.08em;font-size:1.05rem;color:var(--grass)}
+.tip.train h4{color:var(--lane)}
+.info{background:var(--sunk);border-radius:var(--r);padding:14px 18px;display:grid;gap:8px;max-width:84ch;border-left:4px solid var(--rule)}
+.card .info{max-width:none}
+
+details.ref{border:1px solid var(--line);border-radius:var(--r);background:var(--surface)}
+details.ref summary{cursor:pointer;padding:12px 16px;font-weight:700;list-style:none;display:flex;gap:10px;align-items:center}
+details.ref summary::-webkit-details-marker{display:none}
+details.ref summary::before{content:"+";display:grid;place-items:center;width:22px;height:22px;border-radius:50%;background:var(--ink);color:var(--bg);font-weight:800;flex:none}
+details.ref[open] summary::before{content:"–"}
+details.ref .tbl{border:0;border-top:1px solid var(--line);border-radius:0;box-shadow:none}
+
+.seg{display:flex;flex-wrap:wrap;gap:8px}
+.seg label{display:flex;align-items:center;gap:8px;border:1.5px solid var(--line);border-radius:999px;padding:7px 15px;cursor:pointer;background:var(--surface);font-weight:700;transition:all .15s}
+.seg label:hover{border-color:var(--ink)}
+.seg input{width:auto;accent-color:var(--tartan)}
+.seg label:has(input:checked){border-color:var(--ink);background:var(--ink);color:var(--bg)}
+.seg label:focus-within{outline:2px solid var(--lane)}
+
+.gacon td,.gacon th{padding:7px 4px;text-align:center;min-width:40px}
+.gacon input{width:20px;height:20px;accent-color:var(--grass)}
+
+.roa{display:inline-block;min-width:28px;text-align:center;font-family:var(--f-display);font-weight:800;font-size:1.1rem;border-radius:6px;padding:0 5px}
+.roa.R{background:var(--tartan-soft);color:var(--tartan)}
+.roa.O{background:var(--grass-soft);color:var(--grass)}
+.roa.A{background:var(--lane-soft);color:var(--lane)}
+.chg{font-family:var(--f-display);font-weight:800;font-size:1.1rem}
+.chart{width:100%;height:auto;display:block}
+.chart text{fill:var(--muted);font-family:var(--f-body);font-size:11px}
+.legend{display:flex;gap:16px;flex-wrap:wrap;font-size:.86rem;color:var(--muted)}
+.legend i{display:inline-block;width:12px;height:12px;border-radius:3px;vertical-align:-1px;margin-right:6px}
+
+.allure{background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:14px;display:grid;gap:10px;border-top:5px solid var(--rule)}
+.allure:nth-child(1){border-top-color:var(--grass)}.allure:nth-child(2){border-top-color:var(--lane)}.allure:nth-child(3){border-top-color:var(--tartan)}
+
+.eval td{min-width:180px;cursor:pointer;vertical-align:top;transition:background .15s}
+.eval td:hover{background:var(--sunk)}
+.eval td.sel{box-shadow:inset 0 0 0 3px var(--tartan);background:var(--tartan-soft)!important}
+.eval td b{display:block;font-family:var(--f-display);font-size:1.15rem;text-transform:uppercase;letter-spacing:.02em;margin-bottom:4px}
+.eval td .pts{display:inline-block;margin-top:10px;font-size:.8rem;font-weight:700;background:var(--ink);color:var(--bg);border-radius:999px;padding:2px 10px}
+.eval tbody th{white-space:normal;min-width:160px;vertical-align:top;font-weight:400}
+.eval tbody th b{font-family:var(--f-display);font-size:1.3rem;text-transform:uppercase}
+
+.toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:10px 18px;border-radius:999px;font-weight:700;z-index:20;box-shadow:0 10px 30px -10px rgba(0,0,0,.5)}
+.confirm{display:inline-flex;gap:6px;align-items:center;flex-wrap:wrap}
+footer{color:var(--muted);font-size:.88rem;padding-bottom:48px;display:grid;gap:10px;border-top:1px solid var(--line);padding-top:20px}
+@media (max-width:760px){.hero .wrap{grid-template-columns:1fr}.track{right:-420px;opacity:.6}.dossard{transform:rotate(-1deg);max-width:420px}}
+@media (max-width:560px){h2{font-size:1.85rem}.bib{min-width:60px;height:56px;font-size:2.1rem}.dossard .vmabig input{font-size:4.2rem}main{gap:56px}}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}*{transition:none!important}}
+</style>
+<style>
+img{max-width:100%}[hidden]{display:none!important}
+@media print{
+  nav.lanes-nav,footer,.toast,body::before,.hero .tools,.track,details.ref,button[data-usevma]{display:none!important}
+  body{background:#fff;color:#000;font-size:10.5pt}
+  .hero{background:#fff!important;color:#000!important;border-bottom:4px solid #000}
+  .hero h1 span{color:#B83A26}.dossard{transform:none;box-shadow:none;border:2px solid #000}
+  .card,.tbl,.theme{box-shadow:none}
+  .card,.theme,.tip,tr,.allure{break-inside:avoid}
+  .tbl{overflow:visible}
+  thead th{background:#ddd!important;color:#000!important}
+  textarea{min-height:0}
+}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <svg class="track" viewBox="0 0 900 620" aria-hidden="true">
+    <path d="M900 40 H330 A270 270 0 0 0 330 580 H900"/><path d="M900 90 H330 A220 220 0 0 0 330 530 H900"/>
+    <path d="M900 140 H330 A170 170 0 0 0 330 480 H900"/><path d="M900 190 H330 A120 120 0 0 0 330 430 H900"/>
+  </svg>
+  <div class="wrap">
+    <div>
+      <div class="kicker">Champ d'apprentissage n°5 · Livret élève</div>
+      <h1>Course de <span>durée</span></h1>
+      <p class="sub">Réaliser une activité physique pour développer ses ressources et s'entretenir.</p>
+      <div class="tools">
+        <button type="button" id="saveBtn"><svg viewBox="0 0 24 24"><path d="M12 4v11M7 10l5 5 5-5M5 20h14"/></svg>Enregistrer un fichier</button><label for="loadInput" tabindex="0"><svg viewBox="0 0 24 24"><path d="M12 20V9M7 14l5-5 5 5M5 4h14"/></svg>Ouvrir un fichier</label><input type="file" id="loadInput" accept=".json,application/json" hidden><button type="button" id="printBtn"><svg viewBox="0 0 24 24"><path d="M7 9V4h10v5M7 17H5a1 1 0 0 1-1-1v-6a1 1 0 0 1 1-1h14a1 1 0 0 1 1 1v6a1 1 0 0 1-1 1h-2M7 14h10v6H7z"/></svg>Imprimer / PDF</button><button type="button" id="copyBtn"><svg viewBox="0 0 24 24"><rect x="8" y="8" width="12" height="12" rx="2"/><path d="M16 8V5a1 1 0 0 0-1-1H5a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h3"/></svg>Copier le texte</button>
+      </div>
+    </div>
+    <div class="dossard">
+      <i class="pin"></i><i class="pin"></i><i class="pin"></i><i class="pin"></i>
+      <div class="top"><span>Course de durée</span><span>CA 5</span></div>
+      <label class="vmabig" for="vma"><input id="vma" data-save type="number" step="0.5" min="5" max="25" inputmode="decimal" placeholder="00" aria-label="Ma VMA en km/h"><span>km/h<small>ma VMA</small></span></label>
+      <div class="ids">
+        <label>Nom<input id="nom" data-save autocomplete="family-name"></label>
+        <label>Prénom<input id="prenom" data-save autocomplete="given-name"></label>
+        <label class="full">Classe<input id="classe" data-save></label>
+      </div>
+    </div>
+  </div>
+</header>
+
+<nav class="lanes-nav" aria-label="Séances">
+  <div class="wrap" id="nav">
+    <a href="#themes">Thèmes</a>
+    <a href="#s1">S1</a><a href="#s2">S2</a><a href="#s3">S3</a><a href="#s4">S4</a><a href="#s5">S5</a>
+    <a href="#outils">Outils</a><a href="#s6">S6</a><a href="#s7">S7</a><a href="#evaluation">Évaluation</a>
+  </div>
+</nav>
+
+<main class="wrap">
+
+<!-- ============ THÈMES ============ -->
+<section id="themes">
+  <div class="sec-head"><div class="bib">0</div><div class="tag">Ce qui est attendu</div><h2>Attendus &amp; thèmes</h2></div>
+  <div class="card afl">
+    <p><b><span class="mk">AFL 1</span></b><span>S'engager pour obtenir les effets recherchés selon son projet personnel, en faisant des choix de paramètres d'entraînement cohérents avec le thème retenu. <em>(attendu de fin de lycée)</em></span></p>
+    <p><b><span class="mk">AFL 2</span></b><span>S'entraîner, individuellement ou collectivement, pour développer ses ressources et s'entretenir en fonction des effets recherchés.</span></p>
+    <p><b><span class="mk">AFL 3</span></b><span>Coopérer pour faire progresser.</span></p>
+  </div>
+  <h3><span class="mk">Trois thèmes d'entraînement au choix</span></h3>
+  <div class="themes">
+    <article class="theme t1"><header><span class="n">1</span><h3>Compétition</h3><span class="s">Efforts brefs et intenses · <b>Puissance aérobie</b></span></header>
+      <div class="gauge"><div class="lbl">85 à 110 % <small>de sa VMA</small></div><div class="bar"><div class="fill" style="left:50.0%;width:35.7%"></div></div><div class="ticks"><span>50 %</span><span>60 %</span><span>70 %</span><span>80 %</span><span>90 %</span><span>100 %</span><span>110 %</span><span>120 %</span></div></div>
+      <dl>
+        <div><dt>Mobile</dt><dd>« Préparer une performance sportive ». S'entraîner à parcourir la plus grande distance possible dans un temps donné pour préparer un objectif précis.</dd></div>
+        <div><dt>Exemple type de séance</dt><dd>Fractionné court à forte intensité : 2 séries de 6 répétitions de 1' avec 1' de récupération après chaque répétition et 3' de récupération entre chaque série.<br><b>2 × 6 rép. de 1' · r = 1' · R = 3'</b></dd></div>
+        <div><dt>Temps et forme de récupération</dt><dd>Active, pourra être supérieure au temps d'effort et sera d'intensité peu élevée.</dd></div>
+        <div><dt>Respiration · indicateurs d'aisance</dt><dd>Essoufflement, respiration haletante. Ne peut pas parler pendant l'effort.</dd></div>
+        <div><dt>Foulées</dt><dd>Déployées avec de la cadence, on tire sur les bras. Premiers et derniers mètres difficiles.</dd></div>
+      </dl></article>
+    <article class="theme t2"><header><span class="n">2</span><h3>Entretien / santé</h3><span class="s">Efforts longs et soutenus · <b>Capacité aérobie</b></span></header>
+      <div class="gauge"><div class="lbl">70 à 100 % <small>de sa VMA</small></div><div class="bar"><div class="fill" style="left:28.6%;width:42.9%"></div></div><div class="ticks"><span>50 %</span><span>60 %</span><span>70 %</span><span>80 %</span><span>90 %</span><span>100 %</span><span>110 %</span><span>120 %</span></div></div>
+      <dl>
+        <div><dt>Mobile</dt><dd>« Développer un état de bonne santé ». « Être en bonne condition physique ». « Être en forme ».</dd></div>
+        <div><dt>Exemple type de séance</dt><dd>Fractionné long : <b>3 séries de 6' · R = 2'</b></dd></div>
+        <div><dt>Temps et forme de récupération</dt><dd>Sera à peu près égale au temps d'effort ou inférieure jusqu'à la moitié, sous forme active.</dd></div>
+        <div><dt>Respiration · indicateurs d'aisance</dt><dd>Respiration marquée et audible. On peut dire un ou deux mots mais pas parler longtemps.</dd></div>
+        <div><dt>Foulées</dt><dd>Assez économiques, bras moins actifs. Foulées cadencées sur la respiration.</dd></div>
+      </dl></article>
+    <article class="theme t3"><header><span class="n">3</span><h3>Plaisir</h3><span class="s">Efforts prolongés et modérés · <b>Endurance fondamentale</b></span></header>
+      <div class="gauge"><div class="lbl">60 à 70 % <small>de sa VMA</small></div><div class="bar"><div class="fill" style="left:14.3%;width:14.3%"></div></div><div class="ticks"><span>50 %</span><span>60 %</span><span>70 %</span><span>80 %</span><span>90 %</span><span>100 %</span><span>110 %</span><span>120 %</span></div></div>
+      <dl>
+        <div><dt>Mobile</dt><dd>« Rechercher la détente ». « Aider à la perte de poids ». « Rechercher les moyens d'une récupération ».</dd></div>
+        <div><dt>Exemple type de séance</dt><dd>Effort continu : <b>10' · R = 2' · 8'</b></dd></div>
+        <div><dt>Temps et forme de récupération</dt><dd>Sera inférieure au temps d'effort, sous forme active.</dd></div>
+        <div><dt>Respiration · indicateurs d'aisance</dt><dd>Aisance respiratoire. Peut tenir une conversation.</dd></div>
+        <div><dt>Foulées</dt><dd>Petite amplitude, les genoux montent peu, épaules basses et relâchées.</dd></div>
+      </dl></article>
+  </div>
+</section>
+
+<!-- ============ S1 ============ -->
+<section id="s1">
+  <div class="sec-head"><div class="bib">1</div><div class="tag">Leçon pour toute la classe</div><h2>Test VMA · demi-Cooper</h2></div>
+  <div class="grid2">
+    <div class="card">
+      <p><b>Échauffement dirigé</b></p>
+      <label class="f"><span>Sensations au début de la séance</span><textarea id="s1_debut" data-save></textarea></label>
+      <div class="info"><p><b>Test demi-Cooper.</b> Par deux, un coureur / un observateur : parcourir la plus grande distance possible en <b>6 minutes</b> (sans marcher) sur une piste échelonnée.</p><p><b>VMA = distance parcourue en mètres / 100</b></p></div>
+    </div>
+    <div class="card">
+      <div class="grid3">
+        <label class="f"><span>FC au repos</span><input id="s1_fcrepos" data-save type="number" inputmode="numeric" placeholder="puls/min"></label>
+        <label class="f"><span>FC après le test</span><input id="s1_fcapres" data-save type="number" inputmode="numeric" placeholder="puls/min"></label>
+        <label class="f"><span>Distance en 6' (m)</span><input id="s1_dist" data-save type="number" inputmode="numeric" placeholder="ex. 1250"></label>
+      </div>
+      <div class="result">
+        <div><div class="f"><span>VMA en km/h</span></div><div class="out" id="s1_vma">—</div></div>
+        <button type="button" class="small" data-usevma="s1_vma">Utiliser comme ma VMA</button>
+      </div>
+    </div>
+  </div>
+  <div class="info"><p><b><u>Qu'est-ce que la VMA ?</u></b> C'est la vitesse maximale aérobie : vitesse de course très intense que tu peux tenir entre 3 et 7 minutes. Elle correspond à la vitesse à laquelle tu atteins ta consommation maximale d'oxygène (VO2max). Quand tu dépasses ta VMA, le seuil aérobie est dépassé et le moteur anaérobie se met en route ; il produit un déchet gênant : l'acide lactique.</p></div>
+
+  <h3>Mon échelle de sensations</h3>
+  <div class="tbl"><table>
+    <thead><tr><th></th><th>Niveau 1<br><small>Effort modeste</small></th><th>Niveau 2<br><small>Effort moyen</small></th><th>Niveau 3<br><small>Effort intense</small></th><th>Niveau 4<br><small>Effort maximal</small></th></tr></thead>
+    <tbody id="echelle"></tbody>
+  </table></div>
+</section>
+
+<!-- ============ S2 ============ -->
+<section id="s2">
+  <div class="sec-head"><div class="bib">2</div><div class="tag">Séance pour toute la classe</div><h2>Tester le thème n°3</h2></div>
+  <p class="lead">Courir de manière prolongée, à vitesse modérée. Respecter son allure.</p>
+  <div class="grid2" id="s2_pre"></div>
+  <div class="info"><p><b>Travail prévu :</b> 5 × 6' à 60 % ou 70 % de sa VMA. Tester au moins une fois chaque allure. 1'30 de récupération entre chaque série.</p></div>
+  <div class="tbl" id="s2_tbl"></div>
+  <div id="s2_post" class="grid2"></div>
+  <div class="tip"><span class="ico"><svg viewBox="0 0 24 24"><path d="M12 3s-6 6.5-6 11a6 6 0 0 0 12 0c0-4.5-6-11-6-11z"/><path d="M9.5 14.5a2.5 2.5 0 0 0 2.5 2.5"/></svg></span><h4>Le conseil diététique du jour</h4><p>Quand la sensation de soif arrive, le corps a déjà commencé à se déshydrater et cela entraîne rapidement une baisse de la capacité physique. C'est pourquoi, lors d'un effort, il faut boire souvent et régulièrement (au moins toutes les 20') de petites quantités d'eau (10 à 20 cl = 1 à 2 verres d'eau).</p></div>
+  <details class="ref"><summary>Distance à parcourir en 6' en fonction de sa VMA</summary><div class="tbl" id="s2_ref"></div></details>
+</section>
+
+<!-- ============ S3 ============ -->
+<section id="s3">
+  <div class="sec-head"><div class="bib">3</div><div class="tag">Leçon pour toute la classe</div><h2>Test VMA · 36×24 ou Gacon</h2></div>
+  <div class="grid2">
+    <div class="card">
+      <p><b>Échauffement dirigé</b></p>
+      <label class="f"><span>Sensations au début de la séance</span><textarea id="s3_debut" data-save></textarea></label>
+      <div class="grid3">
+        <label class="f"><span>FC au repos</span><input id="s3_fcrepos" data-save type="number" inputmode="numeric"></label>
+        <label class="f"><span>FC après le test</span><input id="s3_fcapres" data-save type="number" inputmode="numeric"></label>
+      </div>
+    </div>
+    <div class="card">
+      <div class="info"><p><b>Test 36×24.</b> Il s'agit de franchir le maximum de plots (placés tous les 10 mètres) en 36'' ; vous avez 24'' de récupération. L'exercice est répété 10 fois. Pour connaître votre VMA, il suffit d'additionner le nombre de plots franchis et de diviser ce nombre par 10.</p>
+      <p><b><u>Test Gacon.</u></b> Ce test est progressif : en 45'' vous devez atteindre le plot correspondant à la vitesse 8 km/h. Après 15'' de récupération, vous devez revenir au point initial. L'opération est répétée pour 8,5 km/h, 9 km/h… Lorsque l'élève n'est plus capable d'atteindre le plot, il a atteint sa vitesse maximale.</p></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-head">
+      <h3>Observation du test 36×24</h3>
+      <label class="f" style="min-width:200px"><span>Observateur</span><input id="s3_obs36" data-save></label>
+    </div>
+    <div class="tbl"><table><thead><tr id="t36h"></tr></thead><tbody><tr id="t36b"></tr></tbody></table></div>
+    <div class="result">
+      <div><div class="f"><span>VMA (total ÷ 10)</span></div><div class="out" id="t36_vma">—</div></div>
+      <button type="button" class="small" data-usevma="t36_vma">Utiliser comme ma VMA</button>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-head">
+      <h3>Observation du test Gacon</h3>
+      <label class="f" style="min-width:200px"><span>Observateur</span><input id="s3_obsgacon" data-save></label>
+    </div>
+    <p style="color:var(--muted);font-size:.9rem">Coche chaque palier réussi (aller puis retour).</p>
+    <div class="tbl gacon"><table><thead><tr id="gh"></tr></thead><tbody><tr id="ga"></tr><tr id="gr"></tr></tbody></table></div>
+    <div class="result">
+      <div><div class="f"><span>VMA atteinte</span></div><div class="out" id="gacon_vma">—</div></div>
+      <button type="button" class="small" data-usevma="gacon_vma">Utiliser comme ma VMA</button>
+    </div>
+  </div>
+</section>
+
+<!-- ============ S4 ============ -->
+<section id="s4">
+  <div class="sec-head"><div class="bib">4</div><div class="tag">Séance pour toute la classe</div><h2>Tester le thème n°2</h2></div>
+  <p class="lead">Courir à différentes allures, associer vitesse et sensations.</p>
+  <div class="grid2" id="s4_pre"></div>
+  <div class="tbl" id="s4_tbl"></div>
+  <div id="s4_post" class="grid2"></div>
+  <div class="tip train"><span class="ico"><svg viewBox="0 0 24 24"><circle cx="12" cy="13.5" r="7.5"/><path d="M12 13.5V9.5M10 2.5h4M18.5 6l1.5-1.5"/></svg></span><h4>Le conseil d'entraînement du jour</h4><p>Le footing est la base de tout entraînement. Il peut avoir plusieurs rôles : entretenir ou accroître l'endurance, c'est-à-dire permettre de tenir longtemps en courant ; récupérer après un entraînement difficile ; permettre d'accroître le volume d'une séance en intercalant des temps de footing ; s'échauffer avant un entraînement. La vitesse du footing est une affaire de sensation : on doit être capable de parler sans être trop essoufflé. Pour utiliser la réserve de graisse comme source d'énergie, il faut courir au moins 30 minutes à allure faible (50 à 60 % VMA).</p></div>
+  <details class="ref"><summary>Tableau des distances de la séance 4 selon la VMA</summary><div class="tbl" id="s4_ref"></div></details>
+</section>
+
+<!-- ============ S5 ============ -->
+<section id="s5">
+  <div class="sec-head"><div class="bib">5</div><div class="tag">Selon son mobile</div><h2>Vivre la séance de son thème</h2></div>
+  <div class="grid2" id="s5_pre"></div>
+  <div class="card">
+    <div class="f"><span>Travail prévu : choisir la séance qui correspond au thème d'entraînement choisi</span></div>
+    <div class="seg" id="s5_seg">
+      <label><input type="radio" name="s5_theme" id="s5_t1" value="1" data-save> Thème 1 · Compétition</label>
+      <label><input type="radio" name="s5_theme" id="s5_t2" value="2" data-save> Thème 2 · Entretien / santé</label>
+      <label><input type="radio" name="s5_theme" id="s5_t3" value="3" data-save> Thème 3 · Plaisir</label>
+    </div>
+  </div>
+  <div id="s5_tables" style="display:grid;gap:16px"></div>
+  <div id="s5_post" class="grid2"></div>
+  <div class="tip"><span class="ico"><svg viewBox="0 0 24 24"><path d="M12 3s-6 6.5-6 11a6 6 0 0 0 12 0c0-4.5-6-11-6-11z"/><path d="M9.5 14.5a2.5 2.5 0 0 0 2.5 2.5"/></svg></span><h4>Le conseil diététique du jour</h4><p>Le dernier repas avant un effort important doit être pris, si possible, 2 à 3 heures avant l'exercice. En effet, il faut que la digestion soit terminée au moment où débute l'effort pour que le sang qui irrigue les muscles ne soit pas aussi demandé dans l'abdomen pour finir la digestion. Cela provoque soit un arrêt de la digestion (mal au ventre, nausée… qui ralentissent l'effort), soit un arrêt de l'exercice (incapacité à poursuivre l'effort).</p></div>
+  <details class="ref"><summary>Tableau des distances de la séance 5 selon la VMA</summary><div class="tbl" id="s5_ref"></div></details>
+</section>
+
+<!-- ============ OUTILS ============ -->
+<section id="outils">
+  <div class="sec-head"><div class="bib">↔</div><div class="tag">Avant les séances 6 et 7</div><h2>Allures, plots &amp; fréquence cardiaque</h2></div>
+  <div class="info">
+    <p>Pour les séances à venir, le temps de course et de récupération sera choisi en <u>minutes</u>. Pendant les courses, un coup de sifflet sera donné toutes les minutes : il faudra être revenu au plot de départ (ou dans la zone de 10 m).</p>
+    <p><u>L'allure de course choisie (en km/h) correspondra au plot.</u> Exemple : si je veux courir à 10 km/h, je vais jusqu'au 10<sup>e</sup> plot et je reviens au départ dans la minute sifflée.</p>
+  </div>
+  <div class="tbl" style="padding:10px"><svg id="cones" class="chart" viewBox="0 0 900 120" role="img" aria-label="Plots numérotés le long de la piste, du départ au plot 14"></svg></div>
+
+  <h3>Plot à atteindre en 1' pour une allure donnée</h3>
+  <p style="color:var(--muted);font-size:.92rem">Ta ligne est surlignée. Le plot N correspond exactement à une vitesse de N km/h. Exemple : VMA 15 km/h, je veux courir à 80 % → je cours jusqu'au plot 12 pendant la minute.</p>
+  <div class="tbl" id="balise"></div>
+  <p style="color:var(--muted);font-size:.8rem">D'après Koessler, Lemire, 2011.</p>
+
+  <h3>Zones de fréquence cardiaque</h3>
+  <div class="grid2">
+    <div class="tbl"><table>
+      <thead><tr><th>Pouls au repos</th><th>Aérobie<br><small>60 à 70 % FCE</small></th><th>Capacité<br><small>70 à 80 % FCE</small></th><th>Puissance<br><small>80 à 95 %</small></th></tr></thead>
+      <tbody>
+        <tr><th>50 à 60 puls/min</th><td>141 à 160</td><td>160 à 175</td><td>175 à 190</td></tr>
+        <tr><th>60 à 80 puls/min</th><td>145 à 165</td><td>165 à 180</td><td>180 à 195</td></tr>
+        <tr><th>80 à 95 puls/min</th><td>155 à 170</td><td>170 à 180</td><td>180 à 198</td></tr>
+      </tbody></table></div>
+    <div class="card">
+      <p><b>FCE = FC au repos + (FC max − FC au repos) × (% de l'intensité de travail choisi)</b></p>
+      <div class="grid3">
+        <label class="f"><span>FC au repos</span><input id="fce_repos" data-save type="number" inputmode="numeric"></label>
+        <label class="f"><span>FC max</span><input id="fce_max" data-save type="number" inputmode="numeric" placeholder="≈ 220 − âge"></label>
+      </div>
+      <div class="tbl"><table><thead><tr><th>Zone</th><th>Mes FC cibles</th></tr></thead><tbody id="fce_out"></tbody></table></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ S6 / S7 ============ -->
+<section id="s6"></section>
+<div class="tip"><span class="ico"><svg viewBox="0 0 24 24"><path d="M12 3s-6 6.5-6 11a6 6 0 0 0 12 0c0-4.5-6-11-6-11z"/><path d="M9.5 14.5a2.5 2.5 0 0 0 2.5 2.5"/></svg></span><h4>Le conseil diététique du jour</h4><p>Le magnésium est le meilleur ami du muscle. Il favorise l'effort musculaire et la transmission de l'influx nerveux. Il régularise l'excitabilité musculaire et le rythme cardiaque. On en trouve dans le cacao, les céréales complètes, les amandes, le poisson…</p></div>
+<section id="s7"></section>
+<div class="tip train"><span class="ico"><svg viewBox="0 0 24 24"><circle cx="12" cy="13.5" r="7.5"/><path d="M12 13.5V9.5M10 2.5h4M18.5 6l1.5-1.5"/></svg></span><h4>Le conseil d'entraînement du jour</h4><p>La récupération active (marche, course lente) permet d'évacuer plus rapidement par le sang l'acide lactique présent dans les cellules musculaires. C'est une substance qui apparaît lors d'efforts intenses (supérieurs à 90 % VMA) et qui bloque la contraction des muscles (sensation de « muscles de bois »).</p></div>
+
+<!-- ============ ÉVALUATION ============ -->
+<section id="evaluation">
+  <div class="sec-head"><div class="bib">20</div><div class="tag">Grille · 20 points</div><h2>Évaluation</h2></div>
+  <p class="lead">Clique sur la case qui te correspond le mieux pour te positionner.</p>
+  <div class="tbl"><table class="eval"><thead><tr><th>Éléments à évaluer</th><th>Degré 1</th><th>Degré 2</th><th>Degré 3</th><th>Degré 4</th></tr></thead><tbody id="evalBody"></tbody></table></div>
+</section>
+
+<footer>Tes réponses sont enregistrées automatiquement dans ce navigateur, sur cet appareil. Pour les garder en sécurité ou les rendre au professeur, utilise « Enregistrer un fichier » en haut de page. <span class="confirm" id="resetZone"><button class="ghost small" type="button" id="resetBtn">Effacer mon livret</button></span></footer>
+</main>
+
+<script>
+(function(){
+const KEY='livret-cdd-v1';
+let store={};
+try{store=JSON.parse(localStorage.getItem(KEY)||'{}')||{}}catch(e){store={}}
+function persist(){try{localStorage.setItem(KEY,JSON.stringify(store))}catch(e){}}
+const $=s=>document.querySelector(s);
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const fmt=(n,d=1)=>{if(n==null||!isFinite(n))return'—';const r=Math.round(n*Math.pow(10,d))/Math.pow(10,d);return r.toLocaleString('fr-FR',{maximumFractionDigits:d})};
+const num=v=>{if(v==null||v==='')return null;const n=parseFloat(String(v).replace(',','.'));return isFinite(n)?n:null};
+const VMA=()=>num($('#vma').value);
+const distM=(vma,pct,min)=>vma*pct/100*1000/60*min;
+const VMAS=[8,9,10,11,12,13,14,15,16,17,18];
+
+/* ---------- builders ---------- */
+const field=(id,label,ta=true)=>`<label class="f"><span>${label}</span>${ta?`<textarea id="${id}" data-save></textarea>`:`<input id="${id}" data-save>`}</label>`;
+function preBlock(sid,prev,ech){return `<div class="card"><p><b>${ech}</b></p>${prev?field(sid+'_apres','Sensations 1 ou 2 jours après la '+prev):''}</div><div class="card">${field(sid+'_debut','Sensations au début de la séance')}</div>`}
+function postBlock(sid){return `<div class="card">${field(sid+'_recup','Récupération')}</div><div class="card">${field(sid+'_bilan','Sensations et bilan de fin de séance')}</div>`}
+
+/* rows: {label, min, pct:number|array|null, reps} */
+function sessionTable(sid,rows,firstHead='Séquence'){
+  let h=`<table><thead><tr><th>${firstHead}</th><th>% VMA choisi</th><th>Vitesse</th><th>Distance prévue</th><th>Distance réalisée</th><th>FC</th><th>Sensations <small>(respiration, thermique, musculaire, articulaire)</small></th></tr></thead><tbody>`;
+  rows.forEach((r,i)=>{
+    const id=`${sid}_r${i}`;
+    let pc;
+    if(Array.isArray(r.pct)) pc=`<select id="${id}_pct" data-save data-pct>${'<option value="">—</option>'+r.pct.map(p=>`<option value="${p}">${p} %</option>`).join('')}</select>`;
+    else if(r.pct==null) pc='<span class="calc empty">marche</span>';
+    else pc=`<b>${r.pct} %</b>`;
+    h+=`<tr data-min="${r.min}" data-fixed="${r.pct==null||Array.isArray(r.pct)?'':r.pct}" data-reps="${r.reps||1}"><th>${r.label}</th><td>${pc}</td><td class="calc" data-speed></td><td class="calc" data-dist></td>
+      <td><input class="w-n" id="${id}_real" data-save type="number" inputmode="numeric" placeholder="m"></td>
+      <td><input class="w-n" id="${id}_fc" data-save type="number" inputmode="numeric"></td>
+      <td><input class="sens" id="${id}_sens" data-save></td></tr>`;
+  });
+  return h+'</tbody></table>';
+}
+function refTable(rows){
+  let h='<table><thead><tr><th>VMA</th>'+VMAS.map(v=>`<th class="c" data-vcol="${v}">${v}</th>`).join('')+'</tr></thead><tbody>';
+  rows.forEach(r=>{h+=`<tr><th>${r.label}</th>`+VMAS.map(v=>`<td class="c" data-vcol="${v}">${Math.round(distM(v,r.pct,r.min))}</td>`).join('')+'</tr>'});
+  return h+'</tbody></table>';
+}
+
+/* S1 échelle */
+$('#echelle').innerHTML=['Sensations respiratoires','Pouls','Sensations musculaires'].map((l,i)=>`<tr><th>${l}</th>${[1,2,3,4].map(n=>`<td><textarea id="ech_${i}_${n}" data-save style="min-height:48px"></textarea></td>`).join('')}</tr>`).join('');
+
+/* S2 */
+$('#s2_pre').innerHTML=preBlock('s2','S1','Échauffement dirigé');
+$('#s2_tbl').innerHTML=sessionTable('s2',[
+  {label:"1<sup>er</sup> 6' (échauffement)",min:6,pct:60},
+  {label:"2<sup>e</sup> 6'",min:6,pct:[60,70]},
+  {label:"3<sup>e</sup> 6'",min:6,pct:[60,70]},
+  {label:"4<sup>e</sup> 6'",min:6,pct:[60,70]},
+  {label:"5<sup>e</sup> 6'",min:6,pct:[60,70]}]);
+$('#s2_post').innerHTML=postBlock('s2');
+$('#s2_ref').innerHTML=refTable([{label:'60 %',min:6,pct:60},{label:'70 %',min:6,pct:70}]);
+
+/* S4 */
+$('#s4_pre').innerHTML=preBlock('s4','S3','Échauffement dirigé');
+$('#s4_tbl').innerHTML=sessionTable('s4',[
+  {label:"3' à 70 % · récup 30''",min:3,pct:70},
+  {label:"6' à 80 % · récup 1' marche",min:6,pct:80},
+  {label:"3' à 90 % · récup 2' marche",min:3,pct:90},
+  {label:"3' à 100 % · récup 2' marche + 1' passive",min:3,pct:100},
+  {label:"6' au choix (60 à 80 %) · récup passive",min:6,pct:[60,70,80]}]);
+$('#s4_post').innerHTML=postBlock('s4');
+$('#s4_ref').innerHTML=refTable([{label:"3' 70 %",min:3,pct:70},{label:"6' à 80 %",min:6,pct:80},{label:"3' à 90 %",min:3,pct:90},{label:"3' à 100 %",min:3,pct:100},{label:"6' 60 %",min:6,pct:60}]);
+
+/* S5 */
+$('#s5_pre').innerHTML=preBlock('s5','S4','Échauffement par groupe');
+const S5={
+ 1:{name:'Thème 1 : compétition',cls:'t1',rows:[{label:"6' à 70 % · récup 1'",min:6,pct:70},{label:"4 × 1' à 110 % · récup 1' marche",min:1,pct:110,reps:4},{label:"10' à 90 % · récup 5' marche",min:10,pct:90},{label:"3' à 70 %",min:3,pct:70}]},
+ 2:{name:'Thème 2 : entretien / santé',cls:'t2',rows:[{label:"6' à 70 % · récup 1'",min:6,pct:70},{label:"3' à 90 % · récup 3'",min:3,pct:90},{label:"4 × 1' à 100 % · récup 1' marche",min:1,pct:100,reps:4},{label:"3' à 90 % et enchaîner…",min:3,pct:90},{label:"3' à 70 %",min:3,pct:70}]},
+ 3:{name:'Thème 3 : plaisir',cls:'t3',rows:[{label:"6' à 70 %",min:6,pct:70},{label:"3' à 60 %",min:3,pct:60},{label:"6' à 80 %",min:6,pct:80},{label:"3' marche promenade",min:3,pct:null},{label:"6' à 70 %",min:6,pct:70},{label:"3' à 80 %",min:3,pct:80},{label:"6' à 60 ou 70 %",min:6,pct:[60,70]}]}
+};
+$('#s5_tables').innerHTML=[1,2,3].map(t=>`<div data-s5="${t}"><h3 style="margin-bottom:8px"><span class="pill" style="color:var(--${t==1?'tartan':t==2?'lane':'grass'})">${S5[t].name}</span></h3><div class="tbl">${sessionTable('s5t'+t,S5[t].rows,'Séquence')}</div></div>`).join('');
+$('#s5_post').innerHTML=postBlock('s5');
+$('#s5_ref').innerHTML=refTable([{label:"6' 70 %",min:6,pct:70},{label:"10' à 90 %",min:10,pct:90},{label:"3' 70 %",min:3,pct:70},{label:"1' à 110 %",min:1,pct:110},{label:"3' à 90 %",min:3,pct:90},{label:"1' à 100 %",min:1,pct:100},{label:"3' à 60 %",min:3,pct:60},{label:"6' à 80 %",min:6,pct:80},{label:"3' à 80 %",min:3,pct:80},{label:"6' 60 %",min:6,pct:60}]);
+
+/* S3 tables */
+$('#t36h').innerHTML=Array.from({length:10},(_,i)=>`<th class="c">${i+1}<sup>${i?'e':'er'}</sup> 36''</th>`).join('')+'<th class="c">Total plots</th>';
+$('#t36b').innerHTML=Array.from({length:10},(_,i)=>`<td><input id="t36_${i}" data-save type="number" inputmode="numeric" style="min-width:52px"></td>`).join('')+'<td class="calc c" id="t36_tot">—</td>';
+const GS=[];for(let v=8;v<=20;v+=.5)GS.push(v);
+$('#gh').innerHTML='<th>Vitesse</th>'+GS.map(v=>`<th>${fmt(v)}</th>`).join('');
+$('#ga').innerHTML='<th>Aller</th>'+GS.map((v,i)=>`<td><input type="checkbox" id="ga_${i}" data-save aria-label="Aller ${fmt(v)} km/h"></td>`).join('');
+$('#gr').innerHTML='<th>Retour</th>'+GS.map((v,i)=>`<td><input type="checkbox" id="gr_${i}" data-save aria-label="Retour ${fmt(v)} km/h"></td>`).join('');
+
+/* Balise table */
+(function(){const P=[60,70,80,90,110];let h='<table><thead><tr><th class="c">100 % VMA</th>'+P.map(p=>`<th class="c">${p} % VMA</th>`).join('')+'</tr></thead><tbody>';
+for(let v=5;v<=20;v++)h+=`<tr data-brow="${v}"><th class="c">${v}</th>`+P.map(p=>`<td class="c">${fmt(v*p/100)}</td>`).join('')+'</tr>';
+$('#balise').innerHTML=h+'</tbody></table>';})();
+
+/* Cones SVG */
+(function(){const s=$('#cones');let g='';const x0=40,step=60;
+g+=`<rect x="10" y="88" width="880" height="8" rx="4" fill="var(--sunk)"/>`;
+g+=`<rect x="10" y="40" width="${step*1.2}" height="56" fill="var(--mark)" opacity=".35"/>`;
+g+=`<text x="14" y="34">Zone de 10 m</text>`;
+for(let i=0;i<=14;i++){const x=x0+i*step;const big=i>0;const h=big?40:22;
+ g+=`<path d="M${x-12} ${92} L${x} ${92-h} L${x+12} ${92} Z" fill="${i===0?'var(--muted)':i%5===0?'var(--tartan)':'var(--ink)'}"/>`;
+ g+=`<text x="${x}" y="114" text-anchor="middle" style="font-weight:700">${i===0?'Départ':i}</text>`;}
+s.innerHTML=g;})();
+
+/* S6 / S7 */
+function buildObsSession(n,title,tag){
+  const p='s'+n;
+  const objs=['Objectif 1 : accompagner un projet sportif','Objectif 2 : développer un état de santé de façon continue','Objectif 3 : rechercher les moyens d\'une récupération ou d\'une détente ou d\'aide à la perte de poids'];
+  const al=['plus faible','moyen','plus élevé'];
+  let h=`<div class="sec-head"><div class="bib">${n}</div><div class="tag">${tag}</div><h2>${title}</h2></div>`;
+  if(n===6)h+=`<p class="lead"><span class="mk">Séance 6 :</span> prévoir une séance de 20'. Les temps de course et de récupération seront toujours « découpés » en 1 minute. Au moins trois changements d'allure.</p>`;
+  else h+=`<p class="lead"><span class="mk">Séance 7 :</span> modifier sa séance en fonction du bilan de la séance précédente.</p>`;
+  h+=`<div class="card"><div class="grid2"><div class="f"><span>Objectif choisi</span><div class="seg">${objs.map((o,i)=>`<label><input type="radio" name="${p}_obj" id="${p}_obj${i}" value="${i}" data-save> ${o}</label>`).join('')}</div></div>
+      <div class="grid3" style="align-content:start"><label class="f"><span>Observateur</span><input id="${p}_observ" data-save></label><div class="f"><span>VMA</span><div class="out" data-vmashow>—</div></div></div></div>
+      <div class="grid3">${al.map((a,i)=>`<div class="allure"><div class="f"><span>Allure ${a}</span></div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px"><label class="f"><span>% VMA</span><input id="${p}_al${i}" data-save type="number" inputmode="numeric" data-alpct></label><div class="f"><span>= km/h</span><div class="out" data-alkmh>—</div></div></div>
+        <label class="f"><span>Couleur du plot</span><input id="${p}_col${i}" data-save></label></div>`).join('')}</div></div>`;
+  h+=`<div class="tbl"><table data-obs="${p}"><thead><tr><th>Min.</th><th>Vitesse prévue<br><small>km/h = plot</small></th><th>Plot atteint</th><th>Vitesse respectée<br><small>R retard · O oui · A avance</small></th><th>Changement d'allure<br><small>A accélère · R ralentit</small></th><th>Distance</th></tr></thead><tbody>`;
+  for(let m=0;m<20;m++)h+=`<tr data-m="${m}"><th class="c">${m+1}</th><td><input class="w-n" id="${p}_v${m}" data-save type="number" step="0.5" inputmode="decimal"></td><td><input class="w-n" id="${p}_p${m}" data-save type="number" step="0.5" inputmode="decimal"></td><td class="c" data-roa></td><td class="c chg" data-chg></td><td class="calc" data-d></td></tr>`;
+  h+=`</tbody><tfoot><tr><th class="c">Total</th><td class="calc" data-tv></td><td class="calc" data-tp></td><td class="calc" data-troa></td><td class="calc" data-tchg></td><td class="calc" data-td></td></tr></tfoot></table></div>`;
+  h+=`<div class="card"><h3>Profil de la séance</h3><svg class="chart" data-chart="${p}" viewBox="0 0 700 200" role="img" aria-label="Vitesse prévue et plot atteint minute par minute"></svg>
+      <div class="legend"><span><i style="background:var(--lane-soft);border:1px solid var(--lane)"></i>Vitesse prévue</span><span><i style="background:var(--tartan);border-radius:50%"></i>Plot atteint</span></div></div>`;
+  h+=`<div class="grid2">${field(p+'_o1','Observation : le choix des allures te semble-t-il adapté ?')}${field(p+'_o2','Le projet est-il respecté ? (si non, à quel moment, quelles modifications possibles…)')}${field(p+'_o3','Quels conseils donnerais-tu ? (répartition des différents temps de course, récupération…)')}
+      <div class="card">${field(p+'_bilan','<span class="mk">Bilan de ta séance</span> : ce que tu vas garder, ce que tu vas modifier')}${field(p+'_aide','<span class="mk">En quoi ton observateur t\'a aidé</span>')}</div></div>`;
+  return h;
+}
+$('#s6').innerHTML=buildObsSession(6,'Construire sa séance','Observateur & coureur');
+$('#s7').innerHTML=buildObsSession(7,'Réguler sa séance','Observateur & coureur');
+
+/* Évaluation */
+const EVAL=[
+ {k:'e1',head:'<b>Produire</b> <span class="pill" style="color:var(--tartan)">AFL 1</span><br>S\'engager de façon efficiente, en sécurité, pour atteindre son objectif<br><b>/ 8 points</b>',
+  d:[['Le coureur minimaliste','L\'élève s\'échauffe de façon incomplète ou trop courte. Sa foulée est toujours identique. Séance incomplète ou non réalisée, l\'élève s\'engage très peu.','De 0 à 2 pts'],
+     ['Le coureur trop économe','L\'élève s\'échauffe suffisamment en temps mais la spécificité n\'est pas suffisamment abordée. Il adapte sa foulée lors des changements d\'allure. Séance réalisée avec 2 changements d\'allure. L\'élève s\'engage mais l\'effort n\'est que partiel.','De 2,5 à 4 pts'],
+     ['Le coureur engagé','L\'élève s\'échauffe de façon complète et suffisamment longtemps pour entrer dans l\'effort. Il adapte sa foulée à l\'allure. Séance réalisée avec 3 changements d\'allure. L\'élève s\'engage et atteint la zone d\'effort attendue (basse).','De 4,25 à 6 pts'],
+     ['Le coureur intense','L\'élève s\'échauffe de façon complète et adaptée (temps, intensité). Il adapte sa foulée à l\'allure. Séance réalisée avec 3 changements d\'allure (VMA optimale). L\'élève s\'engage et atteint la zone d\'effort attendue (haute).','De 6,25 à 8 pts']]},
+ {k:'e2',head:'<b>Analyser</b> <span class="pill" style="color:var(--tartan)">AFL 1</span><br>Exploiter ses ressentis et les analyser pour, si besoin, réguler sa séance en cours de réalisation<br><b>/ 4 points</b>',
+  d:[['Le hasardeux','L\'élève prend très peu en compte ses ressentis pendant l\'effort. Il manipule difficilement les paramètres d\'entraînement, les oublie ou les confond.','De 0 à 1 pt'],
+     ['L\'imprécis','L\'élève prend en compte ses ressentis de façon partielle et ne fait pas de lien pertinent. Il manipule les paramètres d\'entraînement et la FC en commettant des erreurs.','De 1,25 à 2 pts'],
+     ['L\'éclairé','L\'élève utilise les ressentis ; ils sont exploités pour vérifier les paramètres. Il manipule avec justesse les paramètres d\'entraînement et la FC (pas d\'erreur) grâce aux données chiffrées.','De 2,25 à 3 pts'],
+     ['Le réfléchi','L\'élève utilise les ressentis ; ils sont exploités pour vérifier les paramètres. Il manipule finement les paramètres d\'entraînement et la FC, en portant si besoin des régulations immédiates.','De 3,25 à 4 pts']]},
+ {k:'e3',head:'<b>S\'entraîner</b> <span class="pill" style="color:var(--lane)">AFL 2</span><br><b>/ 4 points</b>',
+  d:[['Le concepteur incohérent','Il remplit peu son carnet d\'entraînement mais les séances s\'enchaînent sans lien. Il répète trop peu les efforts pour produire des effets sur lui-même. Aucune transformation possible.','De 0 à 1 pt'],
+     ['Le concepteur imprécis','Il remplit son carnet d\'entraînement mais fait peu de lien entre les séances et le projet. Il reste légèrement en deçà du volume attendu et/ou perd en intensité au fil des répétitions.','De 1,25 à 2 pts'],
+     ['Le concepteur éclairé','Il remplit le carnet d\'entraînement ; la progressivité et l\'adaptation pointent clairement vers le projet. Il atteint le volume d\'effort minimal en conservant l\'intensité liée au projet.','De 2,25 à 3 pts'],
+     ['Le concepteur réfléchi','Il remplit le carnet d\'entraînement et chaque séance a un impact sur la suivante. Il dépasse le volume d\'effort attendu en conservant l\'intensité liée au projet.','De 3,25 à 4 pts']]},
+ {k:'e4',head:'<b>Observer · Conseiller</b> <span class="pill" style="color:var(--grass)">AFL 3</span><br><b>/ 4 points</b>',
+  d:[['Le non impliqué','L\'élève prélève très peu de données, il n\'observe rien ou presque. Ses régulations sont sans rapport avec la course (ou inexistantes).','De 0 à 1 pt'],
+     ['L\'imprécis','L\'élève prélève des données de façon imprécise ou incomplète. Son analyse est passe-partout et fait peu appel aux paramètres d\'entraînement.','De 1,25 à 2 pts'],
+     ['Le conseiller éclairé','L\'élève prélève des données de façon fiable, observe attentivement son partenaire. Son analyse est correcte et il sait porter le regard sur le paramètre à modifier pour être plus performant.','De 2,25 à 3 pts'],
+     ['Le coach personnel','L\'élève prélève les données de façon fiable, observe attentivement son partenaire. Son analyse est précise et personnalisée au regard des possibilités ou du ressenti de son partenaire.','De 3,25 à 4 pts']]}
+];
+$('#evalBody').innerHTML=EVAL.map(r=>`<tr><th>${r.head}</th>${r.d.map((d,i)=>`<td data-eval="${r.k}" data-i="${i}" tabindex="0" role="button" aria-pressed="false"><b>${d[0]}</b>${d[1]}<span class="pts">${d[2]}</span></td>`).join('')}</tr>`).join('');
+
+/* ---------- save / restore ---------- */
+const all=()=>document.querySelectorAll('[data-save]');
+all().forEach(el=>{
+  if(!el.id)return;
+  if(el.type==='checkbox'||el.type==='radio'){if(store[el.id])el.checked=true}
+  else if(store[el.id]!=null)el.value=store[el.id];
+});
+document.addEventListener('input',e=>{
+  const el=e.target;if(!el.matches('[data-save]'))return;
+  if(el.type==='radio'){document.querySelectorAll(`input[name="${el.name}"]`).forEach(r=>{store[r.id]=r.checked})}
+  else if(el.type==='checkbox')store[el.id]=el.checked;
+  else store[el.id]=el.value;
+  persist();update();
+});
+document.addEventListener('change',e=>{if(e.target.matches('select[data-save]')){store[e.target.id]=e.target.value;persist();update()}});
+
+/* eval */
+function paintEval(){document.querySelectorAll('[data-eval]').forEach(td=>{const on=store['eval_'+td.dataset.eval]===td.dataset.i;td.classList.toggle('sel',on);td.setAttribute('aria-pressed',on)})}
+function pickEval(td){const k='eval_'+td.dataset.eval;store[k]=store[k]===td.dataset.i?null:td.dataset.i;persist();paintEval()}
+document.querySelectorAll('[data-eval]').forEach(td=>{td.addEventListener('click',()=>pickEval(td));td.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();pickEval(td)}})});
+
+/* use VMA buttons */
+document.querySelectorAll('[data-usevma]').forEach(b=>b.addEventListener('click',()=>{
+  const v=num($('#'+b.dataset.usevma).dataset.v);
+  if(v==null){toast('Complète d\'abord le test');return}
+  $('#vma').value=v;store.vma=String(v);persist();update();toast('VMA enregistrée : '+fmt(v)+' km/h');
+}));
+
+/* ---------- update ---------- */
+function setOut(el,v,unit){el.dataset.v=v==null?'':v;el.innerHTML=v==null?'—':`${fmt(v)} <small>${unit}</small>`}
+function update(){
+  const vma=VMA();
+  // S1
+  const d=num($('#s1_dist').value);setOut($('#s1_vma'),d!=null?d/100:null,'km/h');
+  // 36x24
+  let tot=0,cnt=0;for(let i=0;i<10;i++){const v=num($('#t36_'+i).value);if(v!=null){tot+=v;cnt++}}
+  $('#t36_tot').textContent=cnt?fmt(tot):'—';setOut($('#t36_vma'),cnt?tot/10:null,'km/h');
+  // Gacon
+  let best=null;GS.forEach((v,i)=>{if($('#ga_'+i).checked)best=v});setOut($('#gacon_vma'),best,'km/h');
+  // session tables
+  document.querySelectorAll('tr[data-min]').forEach(tr=>{
+    const min=+tr.dataset.min,reps=+tr.dataset.reps;let pct=num(tr.dataset.fixed);
+    const sel=tr.querySelector('[data-pct]');if(sel)pct=num(sel.value);
+    const sp=tr.querySelector('[data-speed]'),di=tr.querySelector('[data-dist]');
+    if(vma==null||pct==null){sp.textContent='—';di.textContent='—';sp.classList.add('empty');di.classList.add('empty');return}
+    sp.classList.remove('empty');di.classList.remove('empty');
+    sp.textContent=fmt(vma*pct/100)+' km/h';
+    const m=Math.round(distM(vma,pct,min));
+    di.textContent=(reps>1?`${m} m × ${reps}`:`${m} m`);
+  });
+  // highlight VMA columns / rows
+  document.querySelectorAll('[data-vcol]').forEach(c=>c.classList.toggle('me',vma!=null&&Math.round(vma)===+c.dataset.vcol));
+  document.querySelectorAll('[data-brow]').forEach(r=>r.querySelectorAll('th,td').forEach(c=>c.classList.toggle('me',vma!=null&&Math.round(vma)===+r.dataset.brow)));
+  // S5 theme
+  const th=['1','2','3'].find(t=>$('#s5_t'+t).checked);
+  document.querySelectorAll('[data-s5]').forEach(b=>b.hidden=!!th&&b.dataset.s5!==th);
+  // FCE
+  const fr=num($('#fce_repos').value)??num($('#s3_fcrepos').value)??num($('#s1_fcrepos').value),fm=num($('#fce_max').value);
+  $('#fce_repos').placeholder=fr!=null&&!$('#fce_repos').value?String(fr):'puls/min';
+  const Z=[['Aérobie',60,70],['Capacité',70,80],['Puissance',80,95]];
+  $('#fce_out').innerHTML=Z.map(z=>`<tr><th>${z[0]} <small>(${z[1]}–${z[2]} %)</small></th><td class="calc">${fr!=null&&fm!=null&&fm>fr?`${Math.round(fr+(fm-fr)*z[1]/100)} à ${Math.round(fr+(fm-fr)*z[2]/100)} puls/min`:'<span class="calc empty">renseigne FC repos et FC max</span>'}</td></tr>`).join('');
+  // S6/S7
+  ['s6','s7'].forEach(p=>{
+    const sec=$('#'+p);
+    sec.querySelectorAll('[data-vmashow]').forEach(e=>e.textContent=vma!=null?fmt(vma)+' km/h':'—');
+    sec.querySelectorAll('[data-alpct]').forEach((inp,i)=>{const pc=num(inp.value);sec.querySelectorAll('[data-alkmh]')[i].textContent=(vma!=null&&pc!=null)?fmt(vma*pc/100):'—'});
+    let prev=null,dist=0,chg=0,ok=0,n=0,sumV=0,cV=0,sumP=0,cP=0;const pts=[];
+    sec.querySelectorAll('tr[data-m]').forEach(tr=>{
+      const m=+tr.dataset.m,v=num($(`#${p}_v${m}`).value),pl=num($(`#${p}_p${m}`).value);
+      const roa=tr.querySelector('[data-roa]'),cg=tr.querySelector('[data-chg]'),dd=tr.querySelector('[data-d]');
+      if(v!=null&&pl!=null){const k=pl<v?'R':pl>v?'A':'O';roa.innerHTML=`<span class="roa ${k}">${k}</span>`;n++;if(k==='O')ok++}else roa.textContent='';
+      if(v!=null&&prev!=null&&v!==prev){cg.textContent=v>prev?'A':'R';chg++}else cg.textContent='';
+      if(v!=null){prev=v;sumV+=v;cV++}
+      if(pl!=null){const dm=pl*1000/60;dist+=dm;dd.textContent=Math.round(dm)+' m';sumP+=pl;cP++}else dd.textContent='';
+      pts.push({v,pl});
+    });
+    const ft=sec.querySelector('tfoot');
+    ft.querySelector('[data-tv]').textContent=cV?'moy. '+fmt(sumV/cV):'';
+    ft.querySelector('[data-tp]').textContent=cP?'moy. '+fmt(sumP/cP):'';
+    ft.querySelector('[data-troa]').textContent=n?`${ok}/${n} respectées`:'';
+    ft.querySelector('[data-tchg]').textContent=cV?`${chg} changement${chg>1?'s':''}`:'';
+    ft.querySelector('[data-td]').textContent=cP?Math.round(dist)+' m':'';
+    drawChart(sec.querySelector('[data-chart]'),pts);
+  });
+}
+function drawChart(svg,pts){
+  const W=700,H=200,L=34,R=8,T=10,B=26;const vals=pts.flatMap(p=>[p.v,p.pl]).filter(x=>x!=null);
+  const max=Math.max(16,Math.ceil((Math.max(0,...vals)+1)/2)*2);const bw=(W-L-R)/20;
+  const y=v=>T+(H-T-B)*(1-v/max);let g='';
+  for(let t=0;t<=max;t+=max>20?4:2){g+=`<line x1="${L}" x2="${W-R}" y1="${y(t)}" y2="${y(t)}" stroke="var(--line)" stroke-width="1"/><text x="${L-6}" y="${y(t)+4}" text-anchor="end">${t}</text>`}
+  pts.forEach((p,i)=>{const x=L+i*bw;
+    if(p.v!=null)g+=`<rect x="${x+3}" y="${y(p.v)}" width="${bw-6}" height="${y(0)-y(p.v)}" fill="var(--lane-soft)" stroke="var(--lane)" stroke-width="1"/>`;
+    if(p.pl!=null)g+=`<circle cx="${x+bw/2}" cy="${y(p.pl)}" r="5" fill="var(--tartan)"/>`;
+    if(i%2===0||i===19)g+=`<text x="${x+bw/2}" y="${H-8}" text-anchor="middle">${i+1}</text>`;});
+  if(!vals.length)g+=`<text x="${W/2}" y="${H/2}" text-anchor="middle">Renseigne les vitesses prévues pour voir ton profil</text>`;
+  svg.innerHTML=g;
+}
+
+/* nav highlight */
+const links=[...document.querySelectorAll('#nav a')];
+const io=new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting){links.forEach(a=>a.classList.toggle('on',a.getAttribute('href')==='#'+e.target.id))}})},{rootMargin:'-30% 0px -60% 0px'});
+document.querySelectorAll('main section[id]').forEach(s=>io.observe(s));
+
+/* toast */
+let tt;function toast(msg){let t=$('.toast');if(!t){t=document.createElement('div');t.className='toast';t.setAttribute('role','status');document.body.appendChild(t)}t.textContent=msg;t.hidden=false;clearTimeout(tt);tt=setTimeout(()=>t.hidden=true,2200)}
+
+/* copy summary */
+$('#copyBtn').addEventListener('click',()=>{
+  const lines=[];const g=id=>{const e=$('#'+id);return e?e.value:''};
+  lines.push(`LIVRET COURSE DE DURÉE — ${g('prenom')} ${g('nom')} (${g('classe')})`,`VMA : ${g('vma')||'—'} km/h`,'');
+  document.querySelectorAll('main section[id]').forEach(sec=>{
+    const h=sec.querySelector('h2');const block=[];
+    sec.querySelectorAll('[data-save]').forEach(el=>{
+      if(el.type==='checkbox')return;
+      if(el.type==='radio'){if(el.checked)block.push('• '+el.parentElement.textContent.trim());return}
+      if(!el.value)return;
+      const lab=el.closest('label')?.querySelector('span')?.textContent||el.closest('tr')?.querySelector('th')?.textContent||el.id;
+      block.push(`• ${lab.trim()} : ${el.value}`);
+    });
+    if(block.length)lines.push('== '+(h?h.textContent:sec.id)+' ==',...block,'');
+  });
+  const txt=lines.join('\n');
+  const done=()=>toast('Livret copié : colle-le dans un message ou un document');
+  try{navigator.clipboard.writeText(txt).then(done).catch(fallback)}catch(e){fallback()}
+  function fallback(){const ta=document.createElement('textarea');ta.value=txt;ta.style.position='fixed';ta.style.opacity='0';document.body.appendChild(ta);ta.select();try{document.execCommand('copy');done()}catch(e){toast('Copie impossible sur cet appareil')}ta.remove()}
+});
+
+/* reset with in-page confirmation */
+$('#resetBtn').addEventListener('click',function(){
+  const z=$('#resetZone');z.innerHTML='<span>Tout effacer ?</span><button type="button" class="small" id="rsYes">Oui, effacer</button><button type="button" class="ghost small" id="rsNo">Annuler</button>';
+  const restore=()=>{z.innerHTML='';z.appendChild(btn)};const btn=this;
+  $('#rsNo').onclick=restore;
+  $('#rsYes').onclick=()=>{store={};persist();all().forEach(el=>{if(el.type==='checkbox'||el.type==='radio')el.checked=false;else el.value=''});paintEval();update();restore();toast('Livret effacé')};
+});
+
+paintEval();update();
+
+/* fichier : export / import / impression */
+$('#saveBtn').addEventListener('click',()=>{
+  const name=(($('#nom').value||'')+'_'+($('#prenom').value||'')).trim().replace(/[^\wÀ-ÿ-]+/g,'_').replace(/^_+|_+$/g,'')||'eleve';
+  const blob=new Blob([JSON.stringify({livret:'cdd',version:1,date:new Date().toISOString(),data:store},null,1)],{type:'application/json'});
+  const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='livret-CDD_'+name+'.json';document.body.appendChild(a);a.click();
+  setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},500);toast('Fichier enregistré');
+});
+document.querySelector('label[for="loadInput"]').addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();$('#loadInput').click()}});
+$('#loadInput').addEventListener('change',e=>{
+  const f=e.target.files[0];if(!f)return;const r=new FileReader();
+  r.onload=()=>{try{const j=JSON.parse(r.result);const d=j&&j.data?j.data:j;if(typeof d!=='object')throw 0;
+    store=d;persist();
+    all().forEach(el=>{if(el.type==='checkbox'||el.type==='radio')el.checked=!!store[el.id];else el.value=store[el.id]!=null?store[el.id]:''});
+    paintEval();update();toast('Livret ouvert : '+(($('#prenom').value+' '+$('#nom').value).trim()||f.name));
+  }catch(err){toast('Ce fichier n\'est pas un livret valide')}e.target.value=''};
+  r.readAsText(f);
+});
+$('#printBtn').addEventListener('click',()=>window.print());
+})();
+</script>
+
+<script>
+if('serviceWorker' in navigator && location.protocol.startsWith('http')){
+  window.addEventListener('load',()=>navigator.serviceWorker.register('sw.js').catch(()=>{}));
+}
+</script>
+</body>
+</html>
